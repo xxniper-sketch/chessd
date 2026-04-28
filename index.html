@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chess Hub - Download, Shop &amp; Play</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body { font-family: 'DM Sans', -apple-system, sans-serif; transition: background 0.3s ease, color 0.3s ease; }
+    
+    body.light-theme { background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%); color: #333; }
+    body.dark-theme { background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 100%); color: #ccc; }
+    
+    .theme-toggle { cursor: pointer; }
+    
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    
+    .fade-in { animation: fadeIn 0.6s ease-out; }
+    .float { animation: float 3s ease-in-out infinite; }
+    
+    .carousel-slide { display: none; animation: fadeIn 0.5s ease-out; }
+    .carousel-slide.active { display: flex; }
+    
+    .piece-display { font-size: 8rem; line-height: 1; filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.4)); }
+    
+    .btn-primary { position: relative; overflow: hidden; transition: all 0.3s ease; }
+    .btn-primary::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: rgba(255,255,255,0.2); transition: left 0.3s; }
+    .btn-primary:hover::before { left: 100%; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    
+    .product-card { transition: all 0.3s ease; }
+    .product-card:hover { transform: translateY(-5px); }
+    
+    .form-input { width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid transparent; transition: all 0.3s ease; }
+    
+    .light-theme .form-input { background: #fff; border-color: #ddd; color: #333; }
+    .light-theme .form-input:focus { border-color: #e2b340; box-shadow: 0 0 10px rgba(226, 179, 64, 0.2); }
+    
+    .dark-theme .form-input { background: #1e1e3a; border-color: #333; color: #ccc; }
+    .dark-theme .form-input:focus { border-color: #e2b340; box-shadow: 0 0 10px rgba(226, 179, 64, 0.3); }
+    
+    .toast { position: fixed; bottom: 20px; right: 20px; padding: 1rem 1.5rem; border-radius: 8px; animation: slideIn 0.3s ease-out; }
+    .toast.success { background: #10b981; color: white; }
+    .toast.error { background: #ef4444; color: white; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full overflow-auto dark-theme">
+  <div id="app" class="h-full w-full flex flex-col" style="min-height: 100%;">
+   <!-- Header with Theme Toggle -->
+   <header class="w-full fade-in" style="border-bottom: 1px solid rgba(226, 179, 64, 0.2);">
+    <div class="max-w-6xl mx-auto px-4 py-6 flex justify-between items-center">
+     <h1 id="siteTitle" class="text-4xl font-bold" style="font-family: 'Playfair Display', serif; color: #e2b340;">Chess Hub</h1><button id="themeToggle" class="theme-toggle p-2 rounded-full transition-all" style="background: rgba(226, 179, 64, 0.2); color: #e2b340; border: 1px solid rgba(226, 179, 64, 0.5);"> <i id="themeIcon" data-lucide="moon" style="width: 24px; height: 24px;"></i> </button>
+    </div>
+   </header><!-- Main Content -->
+   <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-12">
+    <!-- Hero Section with Download -->
+    <div class="grid md:grid-cols-2 gap-12 items-center mb-16 fade-in">
+     <div class="flex flex-col gap-6">
+      <div>
+       <h2 class="text-3xl font-bold mb-3" style="color: #e2b340;">Download Chess Game</h2>
+       <p class="text-base leading-relaxed" style="opacity: 0.9;">Play the classic game of strategy and tactics. Challenge yourself or a friend with our fully functional chess game featuring all standard rules, checkmate detection, and undo functionality.</p>
+      </div>
+      <ul class="space-y-2" style="opacity: 0.85;">
+       <li class="flex items-center gap-3"><i data-lucide="check-circle" style="width: 20px; height: 20px; color: #e2b340;"></i> <span>Full chess rules including castling &amp; en passant</span></li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle" style="width: 20px; height: 20px; color: #e2b340;"></i> <span>Real-time check &amp; checkmate detection</span></li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle" style="width: 20px; height: 20px; color: #e2b340;"></i> <span>Pawn promotion with piece selection</span></li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle" style="width: 20px; height: 20px; color: #e2b340;"></i> <span>Undo moves anytime during gameplay</span></li>
+      </ul><button id="downloadBtn" class="btn-primary px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 text-white" style="background: linear-gradient(135deg, #e2b340, #d4a430); width: fit-content;"> <i data-lucide="download" style="width: 24px; height: 24px;"></i> <span id="downloadText" ><a href="app-release.apk" download class="download-button">
+  Download Now
+</a></span> </button>
+
+<button id="downloadBtn" class="btn-primary px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 text-white" style="background: linear-gradient(135deg, #e2b340, #d4a430); width: fit-content;"> <i data-lucide="download" style="width: 24px; height: 24px;"></i> <span id="downloadText" ><a href="game.html"  class="download-button">
+  try Now
+</a></span> </button>
+      <p class="text-xs" style="opacity: 0.6;">Created by oxwellco</p>
+     </div><!-- Enhanced Carousel -->
+     <div class="flex flex-col gap-6">
+      <h3 class="text-2xl font-bold" style="color: #e2b340;">Chess Pieces Gallery</h3>
+      <div class="relative rounded-2xl overflow-hidden" style="background: linear-gradient(135deg, rgba(226, 179, 64, 0.1), rgba(226, 179, 64, 0.05)); border: 2px solid rgba(226, 179, 64, 0.3); padding: 60px 20px; min-height: 400px;">
+       <!-- Carousel Container -->
+       <div class="flex items-center justify-center" style="min-height: 250px;">
+        <div id="carousel" class="relative w-full h-full flex items-center justify-center">
+         <div class="carousel-slide active" style="flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;">
+          <div class="piece-display float">
+           ♚
+          </div>
+          <div style="text-align: center;">
+           <p style="color: #e2b340; font-weight: bold; font-size: 1.2rem;">Black King</p>
+           <p style="opacity: 0.7; font-size: 0.9rem;">Strategic Leadership</p>
+          </div>
+         </div>
+         <div class="carousel-slide" style="flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;">
+          <div class="piece-display float">
+           ♕
+          </div>
+          <div style="text-align: center;">
+           <p style="color: #e2b340; font-weight: bold; font-size: 1.2rem;">White Queen</p>
+           <p style="opacity: 0.7; font-size: 0.9rem;">Powerful &amp; Versatile</p>
+          </div>
+         </div>
+         <div class="carousel-slide" style="flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;">
+          <div class="piece-display float">
+           ♘
+          </div>
+          <div style="text-align: center;">
+           <p style="color: #e2b340; font-weight: bold; font-size: 1.2rem;">Black Knight</p>
+           <p style="opacity: 0.7; font-size: 0.9rem;">Unexpected Moves</p>
+          </div>
+         </div>
+         <div class="carousel-slide" style="flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;">
+          <div class="piece-display float">
+           ♖
+          </div>
+          <div style="text-align: center;">
+           <p style="color: #e2b340; font-weight: bold; font-size: 1.2rem;">White Rook</p>
+           <p style="opacity: 0.7; font-size: 0.9rem;">Direct Power</p>
+          </div>
+         </div>
+         <div class="carousel-slide" style="flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;">
+          <div class="piece-display float">
+           ♝
+          </div>
+          <div style="text-align: center;">
+           <p style="color: #e2b340; font-weight: bold; font-size: 1.2rem;">Black Bishop</p>
+           <p style="opacity: 0.7; font-size: 0.9rem;">Diagonal Dominance</p>
+          </div>
+         </div>
+         <div class="carousel-slide" style="flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;">
+          <div class="piece-display float">
+           ♙
+          </div>
+          <div style="text-align: center;">
+           <p style="color: #e2b340; font-weight: bold; font-size: 1.2rem;">White Pawn</p>
+           <p style="opacity: 0.7; font-size: 0.9rem;">The Foundation</p>
+          </div>
+         </div>
+        </div>
+       </div><!-- Navigation -->
+       <div class="flex items-center justify-center gap-4 mt-8">
+        <button id="prevBtn" class="p-3 rounded-full transition-all hover:scale-110" style="background: rgba(226, 179, 64, 0.2); color: #e2b340; border: 1px solid rgba(226, 179, 64, 0.5);"> <i data-lucide="chevron-left" style="width: 28px; height: 28px;"></i> </button>
+        <div id="indicators" class="flex gap-2"></div><button id="nextBtn" class="p-3 rounded-full transition-all hover:scale-110" style="background: rgba(226, 179, 64, 0.2); color: #e2b340; border: 1px solid rgba(226, 179, 64, 0.5);"> <i data-lucide="chevron-right" style="width: 28px; height: 28px;"></i> </button>
+       </div>
+      </div>
+     </div>
+    </div><!-- Shop Section -->
+    <section class="mb-16 fade-in">
+     <h2 class="text-3xl font-bold mb-8" style="color: #e2b340; text-align: center;">Premium Chess Boards</h2>
+     <div id="shopGrid" class="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <!-- Products will be inserted here by JavaScript -->
+     </div>
+    </section><!-- Contact Form Section -->
+    <section class="mb-16 fade-in" style="background: rgba(226, 179, 64, 0.05); border: 2px solid rgba(226, 179, 64, 0.2); border-radius: 15px; padding: 40px;">
+     <h2 class="text-3xl font-bold mb-2" style="color: #e2b340; text-align: center;">Get In Touch</h2>
+     <p style="text-align: center; opacity: 0.8; margin-bottom: 2rem;">Have questions about our products or services? We'd love to hear from you!</p>
+     <div style="max-width: 500px; margin: 0 auto;">
+      <form id="contactForm">
+       <div class="mb-4">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #e2b340;">Name</label> <input type="text" name="name" placeholder="Your name" class="form-input" required>
+       </div>
+       <div class="mb-4">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #e2b340;">Email</label> <input type="email" name="email" placeholder="Your email" class="form-input" required>
+       </div>
+       <div class="mb-4">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #e2b340;">Message</label> <textarea name="message" placeholder="Your message" class="form-input" rows="5" required></textarea>
+       </div><button type="submit" class="btn-primary w-full px-6 py-3 rounded-xl font-semibold text-white" style="background: linear-gradient(135deg, #e2b340, #d4a430);"> Send Message </button>
+      </form>
+     </div>
+    </section>
+   </main><!-- Footer -->
+   <footer class="w-full" style="border-top: 1px solid rgba(226, 179, 64, 0.2);">
+    <div class="max-w-6xl mx-auto px-4 py-6 text-center" style="opacity: 0.7; font-size: 0.9rem;">
+     <p>© 2024 Chess Hub by oxwellco. All rights reserved.</p>
+    </div>
+   </footer>
+  </div>
+  <script>
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const themeIcon = document.getElementById('themeIcon');
+
+    const currentTheme = localStorage.getItem('theme') || 'dark-theme';
+    body.className = currentTheme;
+    updateThemeIcon(currentTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const newTheme = body.classList.contains('dark-theme') ? 'light-theme' : 'dark-theme';
+      body.classList.remove('dark-theme', 'light-theme');
+      body.classList.add(newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+      lucide.createIcons();
+    });
+
+    function updateThemeIcon(theme) {
+      const icon = theme === 'dark-theme' ? 'sun' : 'moon';
+      themeIcon.setAttribute('data-lucide', icon);
+      lucide.createIcons();
+    }
+
+    // Carousel
+    let currentSlide = 0;
+    const slides = 6;
+
+    function initCarousel() {
+      const indicatorsContainer = document.getElementById('indicators');
+      for (let i = 0; i < slides; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'w-3 h-3 rounded-full transition-all';
+        dot.style.background = i === 0 ? '#e2b340' : 'rgba(226, 179, 64, 0.3)';
+        dot.onclick = () => goToSlide(i);
+        indicatorsContainer.appendChild(dot);
+      }
+      updateCarousel();
+    }
+
+    function updateCarousel() {
+      const slides = document.querySelectorAll('.carousel-slide');
+      const indicators = document.querySelectorAll('#indicators button');
+      
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentSlide);
+      });
+      
+      indicators.forEach((dot, i) => {
+        dot.style.background = i === currentSlide ? '#e2b340' : 'rgba(226, 179, 64, 0.3)';
+      });
+    }
+
+    function goToSlide(n) {
+      currentSlide = (n + slides) % slides;
+      updateCarousel();
+    }
+
+    document.getElementById('nextBtn').addEventListener('click', () => goToSlide(currentSlide + 1));
+    document.getElementById('prevBtn').addEventListener('click', () => goToSlide(currentSlide - 1));
+
+    // Shop Products
+    const products = [
+      { name: 'Classic Wooden', price: '$45', image: '♔' },
+      { name: 'Marble Set', price: '$89', image: '♕' },
+      { name: 'Magnetic Travel', price: '$35', image: '♘' },
+      { name: 'Luxury Gold', price: '$199', image: '♖' },
+      { name: 'Modern Acrylic', price: '$65', image: '♝' },
+      { name: 'Tournament Pro', price: '$120', image: '♙' },
+      { name: 'Glass Edition', price: '$95', image: '♚' },
+      { name: 'Carved Rosewood', price: '$150', image: '♛' },
+      { name: 'Eco Bamboo', price: '$55', image: '♜' },
+      { name: 'LED Digital', price: '$299', image: '♞' }
+    ];
+
+    const shopGrid = document.getElementById('shopGrid');
+    products.forEach(product => {
+      const card = document.createElement('div');
+      card.className = 'product-card rounded-xl p-6 text-center transition-all' 
+        + (body.classList.contains('dark-theme') 
+          ? ' dark-theme-card' 
+          : ' light-theme-card');
+      card.style.background = body.classList.contains('dark-theme') 
+        ? 'rgba(226, 179, 64, 0.1)' 
+        : 'rgba(226, 179, 64, 0.08)';
+      card.style.border = '2px solid rgba(226, 179, 64, 0.2)';
+      card.innerHTML = `
+        <div style="font-size: 3rem; margin-bottom: 1rem;">${product.image}</div>
+        <h3 style="font-weight: bold; margin-bottom: 0.5rem; color: #e2b340;">${product.name}</h3>
+        <p style="opacity: 0.7; margin-bottom: 1rem;">${product.price}</p>
+        <button class="add-to-cart btn-primary w-full px-4 py-2 rounded-lg text-white text-sm" style="background: #e2b340; color: #0f0f23;">
+          Add to Cart
+        </button>
+      `;
+      shopGrid.appendChild(card);
+    });
+
+    // Add to Cart
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        showToast('Added to cart! ✨', 'success');
+      });
+    });
+
+    // Contact Form
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      showToast('Message sent! We\'ll get back to you soon. 📧', 'success');
+      e.target.reset();
+    });
+
+    // Toast Notification
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Element SDK
+    const defaultConfig = {
+      site_title: 'Chess Hub',
+      download_text: 'Download Game',
+      contact_email: 'contact@example.com',
+      font_family: 'Playfair Display',
+      font_size: 16
+    };
+
+    function applyConfig(config) {
+      const title = config.site_title || defaultConfig.site_title;
+      const downloadText = config.download_text || defaultConfig.download_text;
+      document.getElementById('siteTitle').textContent = title;
+      document.getElementById('downloadText').textContent = downloadText;
+    }
+
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => applyConfig(config),
+      mapToCapabilities: (config) => ({
+        recolorables: [
+          {
+            get: () => config.primary_action_color || '#e2b340',
+            set: (v) => {
+              config.primary_action_color = v;
+              window.elementSdk.setConfig({ primary_action_color: v });
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (v) => {
+            config.font_family = v;
+            window.elementSdk.setConfig({ font_family: v });
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (v) => {
+            config.font_size = v;
+            window.elementSdk.setConfig({ font_size: v });
+          }
+        }
+      }),
+      mapToEditPanelValues: (config) => new Map([
+        ['site_title', config.site_title || defaultConfig.site_title],
+        ['download_text', config.download_text || defaultConfig.download_text],
+        ['contact_email', config.contact_email || defaultConfig.contact_email]
+      ])
+    });
+
+    // Download Chess Game
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chess Game</title>
+  <style>
+    html, body { height: 100%; margin: 0; font-family: 'DM Sans', sans-serif; }
+    body { background: #1a1a2e; }
+    .piece { line-height: 1; filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3)); }
+    .board-cell {
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; user-select: none; transition: background 0.15s;
+      position: relative; aspect-ratio: 1;
+    }
+    .board-cell:hover { filter: brightness(1.1); }
+    .board-cell.selected { box-shadow: inset 0 0 0 3px #e2b340; }
+    .board-cell.valid-move::after {
+      content: ''; position: absolute; width: 30%; height: 30%;
+      border-radius: 50%; background: rgba(0,0,0,0.2);
+    }
+    .light-sq { background: #f0d9b5; }
+    .dark-sq { background: #b58863; }
+    @keyframes pieceMove { 0% { transform: scale(0.95) rotate(-5deg); } 100% { transform: scale(1); } }
+    .piece-moved { animation: pieceMove 0.3s ease-out; }
+    #app { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100%; padding: 1rem; }
+    #gameTitle { color: #e2b340; font-size: 2rem; margin-bottom: 0.5rem; }
+    #board { display: grid; grid-template-columns: repeat(8, 1fr); border: 2px solid #e2b340; border-radius: 0.5rem; overflow: hidden; max-width: 500px; width: 100%; }
+    .controls { display: flex; gap: 1rem; margin-top: 1rem; }
+    button { padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 600; }
+    #resetBtn { background: #e2b340; color: #1a1a2e; }
+    #undoBtn { background: #2a2a4e; color: #ccc; border: 1px solid #444; }
+    #turnIndicator { color: #ccc; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1 id="gameTitle">Chess</h1>
+    <div id="turnIndicator"></div>
+    <div id="board"></div>
+    <div class="controls">
+      <button id="resetBtn">New Game</button>
+      <button id="undoBtn">Undo</button>
+    </div>
+  </div>
+  <script>
+const PIECES = { K:'♔', Q:'♕', R:'♖', B:'♗', N:'♘', P:'♙', k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
+const INITIAL = [['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']];
+let board, turn, selected, validMoves, history, capturedW, capturedB, enPassant, castling, gameOver, pendingPromo = null;
+const isWhite = p => p && p === p.toUpperCase();
+const isBlack = p => p && p === p.toLowerCase();
+const colorOf = p => p ? (isWhite(p) ? 'w' : 'b') : null;
+const clone = b => b.map(r => [...r]);
+const inBounds = (r,c) => r>=0 && r<8 && c>=0 && c<8;
+function init() { board = INITIAL.map(r => [...r]); turn = 'w'; selected = null; validMoves = []; history = []; capturedW = []; capturedB = []; gameOver = false; enPassant = null; castling = { K: true, Q: true, k: true, q: true }; render(); }
+function isKingInCheck(b, color) { let kr=-1, kc=-1; const king = color==='w' ? 'K' : 'k'; for (let r=0;r<8;r++) for (let c=0;c<8;c++) if (b[r][c]===king) { kr=r; kc=c; } if (kr<0) return true; return isSquareAttacked(b, kr, kc, color==='w'?'b':'w'); }
+function isSquareAttacked(b, tr, tc, byColor) { for (let r=0;r<8;r++) for (let c=0;c<8;c++) { const p = b[r][c]; if (!p || colorOf(p)!==byColor) continue; const moves = rawMoves(b, r, c, p, null, null); if (moves.some(m => m[0]===tr && m[1]===tc)) return true; } return false; }
+function rawMoves(b, r, c, p, ep, cast) { const moves = []; const type = p.toUpperCase(); const col = colorOf(p); const enemy = col==='w' ? 'b' : 'w'; const dirs = { B: [[-1,-1],[-1,1],[1,-1],[1,1]], R: [[-1,0],[1,0],[0,-1],[0,1]], Q: [[-1,-1],[-1,1],[1,-1],[1,1],[-1,0],[1,0],[0,-1],[0,1]] }; if (type==='P') { const dir = col==='w' ? -1 : 1; const start = col==='w' ? 6 : 1; if (inBounds(r+dir,c) && !b[r+dir][c]) { moves.push([r+dir,c]); if (r===start && !b[r+2*dir][c]) moves.push([r+2*dir,c]); } for (const dc of [-1,1]) { const nr=r+dir, nc=c+dc; if (!inBounds(nr,nc)) continue; if (b[nr][nc] && colorOf(b[nr][nc])===enemy) moves.push([nr,nc]); if (ep && ep[0]===nr && ep[1]===nc) moves.push([nr,nc]); } } else if (type==='N') { for (const [dr,dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]) { const nr=r+dr, nc=c+dc; if (inBounds(nr,nc) && colorOf(b[nr][nc])!==col) moves.push([nr,nc]); } } else if (type==='K') { for (let dr=-1;dr<=1;dr++) for (let dc=-1;dc<=1;dc++) { if (!dr && !dc) continue; const nr=r+dr, nc=c+dc; if (inBounds(nr,nc) && colorOf(b[nr][nc])!==col) moves.push([nr,nc]); } } else if (dirs[type]) { for (const [dr,dc] of dirs[type]) { let nr=r+dr, nc=c+dc; while (inBounds(nr,nc)) { if (b[nr][nc]) { if (colorOf(b[nr][nc])===enemy) moves.push([nr,nc]); break; } moves.push([nr,nc]); nr+=dr; nc+=dc; } } } return moves; }
+function getLegalMoves(r, c) { const p = board[r][c]; if (!p) return []; const col = colorOf(p); let moves = rawMoves(board, r, c, p, enPassant, castling); if (p==='K' && r===7 && c===4) { if (castling.K && !board[7][5] && !board[7][6] && board[7][7]==='R' && !isKingInCheck(board,'w') && !isSquareAttacked(board,7,5,'b') && !isSquareAttacked(board,7,6,'b')) moves.push([7,6]); if (castling.Q && !board[7][3] && !board[7][2] && !board[7][1] && board[7][0]==='R' && !isKingInCheck(board,'w') && !isSquareAttacked(board,7,3,'b') && !isSquareAttacked(board,7,2,'b')) moves.push([7,2]); } if (p==='k' && r===0 && c===4) { if (castling.k && !board[0][5] && !board[0][6] && board[0][7]==='r' && !isKingInCheck(board,'b') && !isSquareAttacked(board,0,5,'w') && !isSquareAttacked(board,0,6,'w')) moves.push([0,6]); if (castling.q && !board[0][3] && !board[0][2] && !board[0][1] && board[0][0]==='r' && !isKingInCheck(board,'b') && !isSquareAttacked(board,0,3,'w') && !isSquareAttacked(board,0,2,'w')) moves.push([0,2]); } return moves.filter(([nr,nc]) => { const sim = clone(board); sim[nr][nc] = sim[r][c]; sim[r][c] = null; if (p.toUpperCase()==='P' && enPassant && nr===enPassant[0] && nc===enPassant[1]) sim[r][nc] = null; if (p==='K' && c===4 && nc===6) { sim[7][5]=sim[7][7]; sim[7][7]=null; } if (p==='K' && c===4 && nc===2) { sim[7][3]=sim[7][0]; sim[7][0]=null; } if (p==='k' && c===4 && nc===6) { sim[0][5]=sim[0][7]; sim[0][7]=null; } if (p==='k' && c===4 && nc===2) { sim[0][3]=sim[0][0]; sim[0][0]=null; } return !isKingInCheck(sim, col); }); }
+function hasAnyLegalMove(color) { for (let r=0;r<8;r++) for (let c=0;c<8;c++) { if (board[r][c] && colorOf(board[r][c])===color && getLegalMoves(r,c).length>0) return true; } return false; }
+function makeMove(fr, fc, tr, tc, promoChoice) { const p = board[fr][fc]; const captured = board[tr][tc]; history.push({ board: clone(board), turn, enPassant: enPassant ? [...enPassant] : null, castling: {...castling}, capturedW: [...capturedW], capturedB: [...capturedB], gameOver }); if (p.toUpperCase()==='P' && enPassant && tr===enPassant[0] && tc===enPassant[1]) { const cap = board[fr][tc]; if (colorOf(cap)==='w') capturedW.push(cap); else capturedB.push(cap); board[fr][tc] = null; } if (captured) { if (colorOf(captured)==='w') capturedW.push(captured); else capturedB.push(captured); } board[tr][tc] = p; board[fr][fc] = null; if (p==='K' && fc===4 && tc===6) { board[7][5]=board[7][7]; board[7][7]=null; } if (p==='K' && fc===4 && tc===2) { board[7][3]=board[7][0]; board[7][0]=null; } if (p==='k' && fc===4 && tc===6) { board[0][5]=board[0][7]; board[0][7]=null; } if (p==='k' && fc===4 && tc===2) { board[0][3]=board[0][0]; board[0][0]=null; } if (p==='K') { castling.K=false; castling.Q=false; } if (p==='k') { castling.k=false; castling.q=false; } if (p==='R' && fr===7 && fc===7) castling.K=false; if (p==='R' && fr===7 && fc===0) castling.Q=false; if (p==='r' && fr===0 && fc===7) castling.k=false; if (p==='r' && fr===0 && fc===0) castling.q=false; enPassant = null; if (p.toUpperCase()==='P' && Math.abs(tr-fr)===2) { enPassant = [(fr+tr)/2, fc]; } if (p==='P' && tr===0) { board[tr][tc] = promoChoice || 'Q'; } if (p==='p' && tr===7) { board[tr][tc] = promoChoice || 'q'; } turn = turn==='w' ? 'b' : 'w'; if (!hasAnyLegalMove(turn)) { gameOver = true; } selected = null; validMoves = []; render(); }
+function undo() { if (!history.length) return; const s = history.pop(); board = s.board; turn = s.turn; enPassant = s.enPassant; castling = s.castling; capturedW = s.capturedW; capturedB = s.capturedB; gameOver = s.gameOver; selected = null; validMoves = []; render(); }
+function cellClick(r, c) { if (gameOver) return; if (pendingPromo) return; const p = board[r][c]; if (selected) { const [sr, sc] = selected; if (validMoves.some(m => m[0]===r && m[1]===c)) { const piece = board[sr][sc]; if (piece.toUpperCase()==='P' && (r===0 || r===7)) { pendingPromo = { fr: sr, fc: sc, tr: r, tc: c }; return; } makeMove(sr, sc, r, c); return; } } if (p && colorOf(p) === turn) { selected = [r, c]; validMoves = getLegalMoves(r, c); } else { selected = null; validMoves = []; } render(); }
+function render() { const boardEl = document.getElementById('board'); if (!boardEl.children.length) { for (let r=0;r<8;r++) for (let c=0;c<8;c++) { const cell = document.createElement('div'); cell.className = 'board-cell ' + ((r+c)%2===0 ? 'light-sq' : 'dark-sq'); cell.dataset.r = r; cell.dataset.c = c; cell.addEventListener('click', () => cellClick(r, c)); const span = document.createElement('span'); span.className = 'piece'; cell.appendChild(span); boardEl.appendChild(cell); } } const cells = boardEl.children; for (let r=0;r<8;r++) for (let c=0;c<8;c++) { const cell = cells[r*8+c]; const p = board[r][c]; const oldContent = cell.firstChild.textContent; cell.firstChild.textContent = p ? PIECES[p] : ''; if (oldContent !== (p ? PIECES[p] : '')) { cell.firstChild.classList.remove('piece-moved'); void cell.firstChild.offsetWidth; cell.firstChild.classList.add('piece-moved'); } cell.classList.toggle('selected', !!(selected && selected[0]===r && selected[1]===c)); const isValid = validMoves.some(m => m[0]===r && m[1]===c); cell.classList.toggle('valid-move', isValid); } const ti = document.getElementById('turnIndicator'); if (gameOver) { ti.textContent = 'Game Over'; } else { const playerColor = turn==='w' ? 'White' : 'Black'; const playerSymbol = turn==='w' ? '⚪' : '⚫'; ti.textContent = playerSymbol + ' ' + playerColor + "'s Turn"; } }
+document.getElementById('resetBtn').addEventListener('click', init);
+document.getElementById('undoBtn').addEventListener('click', undo);
+init();
+</script>`; const blob = new Blob([htmlContent], { type: 'text/html' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'chess-game.html'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }); initCarousel(); lucide.createIcons(); 
+  <script>
+let currentSlide = 0;
+const slides = 6;
+
+function initCarousel() {
+  // Create indicators
+  const indicatorsContainer = document.getElementById('indicators');
+  for (let i = 0; i < slides; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'w-2 h-2 rounded-full transition-all';
+    dot.style.background = i === 0 ? '#e2b340' : 'rgba(226, 179, 64, 0.3)';
+    dot.onclick = () => goToSlide(i);
+    indicatorsContainer.appendChild(dot);
+  }
+  updateCarousel();
+}
+
+function updateCarousel() {
+  const slides = document.querySelectorAll('.carousel-slide');
+  const indicators = document.querySelectorAll('#indicators button');
+  
+  slides.forEach((slide, i) => {
+    slide.classList.toggle('active', i === currentSlide);
+  });
+  
+  indicators.forEach((dot, i) => {
+    dot.style.background = i === currentSlide ? '#e2b340' : 'rgba(226, 179, 64, 0.3)';
+  });
+}
+
+function goToSlide(n) {
+  currentSlide = (n + slides) % slides;
+  updateCarousel();
+}
+
+function nextSlide() {
+  goToSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+  goToSlide(currentSlide - 1);
+}
+
+document.getElementById('nextBtn').addEventListener('click', nextSlide);
+document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+// // Download button
+// document.getElementById('downloadBtn').addEventListener('click', () => {
+//   const htmlContent = `<!DOCTYPE html>
+// <html lang="en">
+// <head>
+//   <meta charset="UTF-8">
+//   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//   <title>Chess Game</title>
+//   <style>
+//     html, body { height: 100%; margin: 0; font-family: 'DM Sans', sans-serif; }
+//     body { background: #1a1a2e; }
+//     .piece { line-height: 1; filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3)); }
+//     .board-cell {
+//       cursor: pointer; display: flex; align-items: center; justify-content: center;
+//       font-size: 2.5rem; user-select: none; transition: background 0.15s;
+//       position: relative; aspect-ratio: 1;
+//     }
+//     .board-cell:hover { filter: brightness(1.1); }
+//     .board-cell.selected { box-shadow: inset 0 0 0 3px #e2b340; }
+//     .board-cell.valid-move::after {
+//       content: ''; position: absolute; width: 30%; height: 30%;
+//       border-radius: 50%; background: rgba(0,0,0,0.2);
+//     }
+//     .light-sq { background: #f0d9b5; }
+//     .dark-sq { background: #b58863; }
+//     @keyframes pieceMove { 0% { transform: scale(0.95) rotate(-5deg); } 100% { transform: scale(1); } }
+//     .piece-moved { animation: pieceMove 0.3s ease-out; }
+//     #app { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100%; padding: 1rem; }
+//     #gameTitle { color: #e2b340; font-size: 2rem; margin-bottom: 0.5rem; }
+//     #board { display: grid; grid-template-columns: repeat(8, 1fr); border: 2px solid #e2b340; border-radius: 0.5rem; overflow: hidden; max-width: 500px; width: 100%; }
+//     .controls { display: flex; gap: 1rem; margin-top: 1rem; }
+//     button { padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 600; }
+//     #resetBtn { background: #e2b340; color: #1a1a2e; }
+//     #undoBtn { background: #2a2a4e; color: #ccc; border: 1px solid #444; }
+//     #turnIndicator { color: #ccc; margin-bottom: 1rem; }
+//   </style>
+// </head>
+// <body>
+//   <div id="app">
+//     <h1 id="gameTitle">Chess</h1>
+//     <div id="turnIndicator"></div>
+//     <div id="board"></div>
+//     <div class="controls">
+//       <button id="resetBtn">New Game</button>
+//       <button id="undoBtn">Undo</button>
+//     </div>
+//   </div>
+//   <script>
+// const PIECES = { K:'♔', Q:'♕', R:'♖', B:'♗', N:'♘', P:'♙', k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
+// const INITIAL = [['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']];
+// let board, turn, selected, validMoves, history, capturedW, capturedB, enPassant, castling, gameOver, pendingPromo = null;
+// const isWhite = p => p && p === p.toUpperCase();
+// const isBlack = p => p && p === p.toLowerCase();
+// const colorOf = p => p ? (isWhite(p) ? 'w' : 'b') : null;
+// const clone = b => b.map(r => [...r]);
+// const inBounds = (r,c) => r>=0 && r<8 && c>=0 && c<8;
+// function init() { board = INITIAL.map(r => [...r]); turn = 'w'; selected = null; validMoves = []; history = []; capturedW = []; capturedB = []; gameOver = false; enPassant = null; castling = { K: true, Q: true, k: true, q: true }; render(); }
+// function isKingInCheck(b, color) { let kr=-1, kc=-1; const king = color==='w' ? 'K' : 'k'; for (let r=0;r<8;r++) for (let c=0;c<8;c++) if (b[r][c]===king) { kr=r; kc=c; } if (kr<0) return true; return isSquareAttacked(b, kr, kc, color==='w'?'b':'w'); }
+// function isSquareAttacked(b, tr, tc, byColor) { for (let r=0;r<8;r++) for (let c=0;c<8;c++) { const p = b[r][c]; if (!p || colorOf(p)!==byColor) continue; const moves = rawMoves(b, r, c, p, null, null); if (moves.some(m => m[0]===tr && m[1]===tc)) return true; } return false; }
+// function rawMoves(b, r, c, p, ep, cast) { const moves = []; const type = p.toUpperCase(); const col = colorOf(p); const enemy = col==='w' ? 'b' : 'w'; const dirs = { B: [[-1,-1],[-1,1],[1,-1],[1,1]], R: [[-1,0],[1,0],[0,-1],[0,1]], Q: [[-1,-1],[-1,1],[1,-1],[1,1],[-1,0],[1,0],[0,-1],[0,1]] }; if (type==='P') { const dir = col==='w' ? -1 : 1; const start = col==='w' ? 6 : 1; if (inBounds(r+dir,c) && !b[r+dir][c]) { moves.push([r+dir,c]); if (r===start && !b[r+2*dir][c]) moves.push([r+2*dir,c]); } for (const dc of [-1,1]) { const nr=r+dir, nc=c+dc; if (!inBounds(nr,nc)) continue; if (b[nr][nc] && colorOf(b[nr][nc])===enemy) moves.push([nr,nc]); if (ep && ep[0]===nr && ep[1]===nc) moves.push([nr,nc]); } } else if (type==='N') { for (const [dr,dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]) { const nr=r+dr, nc=c+dc; if (inBounds(nr,nc) && colorOf(b[nr][nc])!==col) moves.push([nr,nc]); } } else if (type==='K') { for (let dr=-1;dr<=1;dr++) for (let dc=-1;dc<=1;dc++) { if (!dr && !dc) continue; const nr=r+dr, nc=c+dc; if (inBounds(nr,nc) && colorOf(b[nr][nc])!==col) moves.push([nr,nc]); } } else if (dirs[type]) { for (const [dr,dc] of dirs[type]) { let nr=r+dr, nc=c+dc; while (inBounds(nr,nc)) { if (b[nr][nc]) { if (colorOf(b[nr][nc])===enemy) moves.push([nr,nc]); break; } moves.push([nr,nc]); nr+=dr; nc+=dc; } } } return moves; }
+// function getLegalMoves(r, c) { const p = board[r][c]; if (!p) return []; const col = colorOf(p); let moves = rawMoves(board, r, c, p, enPassant, castling); if (p==='K' && r===7 && c===4) { if (castling.K && !board[7][5] && !board[7][6] && board[7][7]==='R' && !isKingInCheck(board,'w') && !isSquareAttacked(board,7,5,'b') && !isSquareAttacked(board,7,6,'b')) moves.push([7,6]); if (castling.Q && !board[7][3] && !board[7][2] && !board[7][1] && board[7][0]==='R' && !isKingInCheck(board,'w') && !isSquareAttacked(board,7,3,'b') && !isSquareAttacked(board,7,2,'b')) moves.push([7,2]); } if (p==='k' && r===0 && c===4) { if (castling.k && !board[0][5] && !board[0][6] && board[0][7]==='r' && !isKingInCheck(board,'b') && !isSquareAttacked(board,0,5,'w') && !isSquareAttacked(board,0,6,'w')) moves.push([0,6]); if (castling.q && !board[0][3] && !board[0][2] && !board[0][1] && board[0][0]==='r' && !isKingInCheck(board,'b') && !isSquareAttacked(board,0,3,'w') && !isSquareAttacked(board,0,2,'w')) moves.push([0,2]); } return moves.filter(([nr,nc]) => { const sim = clone(board); sim[nr][nc] = sim[r][c]; sim[r][c] = null; if (p.toUpperCase()==='P' && enPassant && nr===enPassant[0] && nc===enPassant[1]) sim[r][nc] = null; if (p==='K' && c===4 && nc===6) { sim[7][5]=sim[7][7]; sim[7][7]=null; } if (p==='K' && c===4 && nc===2) { sim[7][3]=sim[7][0]; sim[7][0]=null; } if (p==='k' && c===4 && nc===6) { sim[0][5]=sim[0][7]; sim[0][7]=null; } if (p==='k' && c===4 && nc===2) { sim[0][3]=sim[0][0]; sim[0][0]=null; } return !isKingInCheck(sim, col); }); }
+// function hasAnyLegalMove(color) { for (let r=0;r<8;r++) for (let c=0;c<8;c++) { if (board[r][c] && colorOf(board[r][c])===color && getLegalMoves(r,c).length>0) return true; } return false; }
+// function makeMove(fr, fc, tr, tc, promoChoice) { const p = board[fr][fc]; const captured = board[tr][tc]; history.push({ board: clone(board), turn, enPassant: enPassant ? [...enPassant] : null, castling: {...castling}, capturedW: [...capturedW], capturedB: [...capturedB], gameOver }); if (p.toUpperCase()==='P' && enPassant && tr===enPassant[0] && tc===enPassant[1]) { const cap = board[fr][tc]; if (colorOf(cap)==='w') capturedW.push(cap); else capturedB.push(cap); board[fr][tc] = null; } if (captured) { if (colorOf(captured)==='w') capturedW.push(captured); else capturedB.push(captured); } board[tr][tc] = p; board[fr][fc] = null; if (p==='K' && fc===4 && tc===6) { board[7][5]=board[7][7]; board[7][7]=null; } if (p==='K' && fc===4 && tc===2) { board[7][3]=board[7][0]; board[7][0]=null; } if (p==='k' && fc===4 && tc===6) { board[0][5]=board[0][7]; board[0][7]=null; } if (p==='k' && fc===4 && tc===2) { board[0][3]=board[0][0]; board[0][0]=null; } if (p==='K') { castling.K=false; castling.Q=false; } if (p==='k') { castling.k=false; castling.q=false; } if (p==='R' && fr===7 && fc===7) castling.K=false; if (p==='R' && fr===7 && fc===0) castling.Q=false; if (p==='r' && fr===0 && fc===7) castling.k=false; if (p==='r' && fr===0 && fc===0) castling.q=false; enPassant = null; if (p.toUpperCase()==='P' && Math.abs(tr-fr)===2) { enPassant = [(fr+tr)/2, fc]; } if (p==='P' && tr===0) { board[tr][tc] = promoChoice || 'Q'; } if (p==='p' && tr===7) { board[tr][tc] = promoChoice || 'q'; } turn = turn==='w' ? 'b' : 'w'; if (!hasAnyLegalMove(turn)) { gameOver = true; } selected = null; validMoves = []; render(); }
+// function undo() { if (!history.length) return; const s = history.pop(); board = s.board; turn = s.turn; enPassant = s.enPassant; castling = s.castling; capturedW = s.capturedW; capturedB = s.capturedB; gameOver = s.gameOver; selected = null; validMoves = []; render(); }
+// function cellClick(r, c) { if (gameOver) return; if (pendingPromo) return; const p = board[r][c]; if (selected) { const [sr, sc] = selected; if (validMoves.some(m => m[0]===r && m[1]===c)) { const piece = board[sr][sc]; if (piece.toUpperCase()==='P' && (r===0 || r===7)) { pendingPromo = { fr: sr, fc: sc, tr: r, tc: c }; return; } makeMove(sr, sc, r, c); return; } } if (p && colorOf(p) === turn) { selected = [r, c]; validMoves = getLegalMoves(r, c); } else { selected = null; validMoves = []; } render(); }
+// function render() { const boardEl = document.getElementById('board'); if (!boardEl.children.length) { for (let r=0;r<8;r++) for (let c=0;c<8;c++) { const cell = document.createElement('div'); cell.className = 'board-cell ' + ((r+c)%2===0 ? 'light-sq' : 'dark-sq'); cell.dataset.r = r; cell.dataset.c = c; cell.addEventListener('click', () => cellClick(r, c)); const span = document.createElement('span'); span.className = 'piece'; cell.appendChild(span); boardEl.appendChild(cell); } } const cells = boardEl.children; for (let r=0;r<8;r++) for (let c=0;c<8;c++) { const cell = cells[r*8+c]; const p = board[r][c]; const oldContent = cell.firstChild.textContent; cell.firstChild.textContent = p ? PIECES[p] : ''; if (oldContent !== (p ? PIECES[p] : '')) { cell.firstChild.classList.remove('piece-moved'); void cell.firstChild.offsetWidth; cell.firstChild.classList.add('piece-moved'); } cell.classList.toggle('selected', !!(selected && selected[0]===r && selected[1]===c)); const isValid = validMoves.some(m => m[0]===r && m[1]===c); cell.classList.toggle('valid-move', isValid); } const ti = document.getElementById('turnIndicator'); if (gameOver) { ti.textContent = 'Game Over'; } else { const playerColor = turn==='w' ? 'White' : 'Black'; const playerSymbol = turn==='w' ? '⚪' : '⚫'; ti.textContent = playerSymbol + ' ' + playerColor + "'s Turn"; } }
+// document.getElementById('resetBtn').addEventListener('click', init);
+// document.getElementById('undoBtn').addEventListener('click', undo);
+// init();
+// </script>`; const blob = new Blob([htmlContent], { type: 'text/html' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'chess-game.html'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); } // Element SDK const defaultConfig = { site_title: 'Chess Hub', download_text: 'Download Game', background_color: '#0f0f23', surface_color: '#1e1e3a', text_color: '#cccccc', primary_action_color: '#e2b340', font_family: 'Playfair Display', font_size: 16 }; function applyConfig(config) { const title = config.site_title || defaultConfig.site_title; const downloadText = config.download_text || defaultConfig.download_text; document.getElementById('siteTitle').textContent = title; document.getElementById('downloadText').textContent = downloadText; } window.elementSdk.init({ defaultConfig, onConfigChange: async (config) =&gt; applyConfig(config), mapToCapabilities: (config) =&gt; ({ recolorables: [ { get: () =&gt; config.primary_action_color || defaultConfig.primary_action_color, set: (v) =&gt; { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } } ], borderables: [], fontEditable: { get: () =&gt; config.font_family || defaultConfig.font_family, set: (v) =&gt; { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } }, fontSizeable: { get: () =&gt; config.font_size || defaultConfig.font_size, set: (v) =&gt; { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } } }), mapToEditPanelValues: (config) =&gt; new Map([ ['site_title', config.site_title || defaultConfig.site_title], ['download_text', config.download_text || defaultConfig.download_text] ]) }); initCarousel(); lucide.createIcons();
+//  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f3648c983509538',t:'MTc3NzM4MTU4Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+// </html>
